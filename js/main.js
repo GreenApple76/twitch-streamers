@@ -19,7 +19,7 @@ $(document).ready(function() {
 	createUser();
 	getLogo(userArr);
 	getStatus(userArr);
-	setTimeout(printStatus, 900);
+	setTimeout(printStatus, 1000);
 
 	// instantiate a User object to store username, streaming status, etc.
 	// and add obj to the array of user objects
