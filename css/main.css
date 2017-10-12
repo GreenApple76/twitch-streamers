@@ -97,13 +97,87 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+body {
+    font-family: 'Arimo', sans-serif;
+    font-size: 16px;
+    background: #f8ffe8; /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover, #f8ffe8 0%, #e3f5ab 33%, #b7df2d 100%); /* FF3.6-15 */
+    background: -webkit-radial-gradient(center, ellipse cover, #f8ffe8 0%,#e3f5ab 33%,#b7df2d 100%); /* Chrome10-25,Safari5.1-6 */
+    background: radial-gradient(ellipse at center, #f8ffe8 0%,#e3f5ab 33%,#b7df2d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8ffe8', endColorstr='#b7df2d',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+h1 {
+    font-family: 'Lobster', cursive;
+    font-size: 3em;
+    color: green;
+    margin-top: 0;
+    margin-bottom: .25em;
+    line-height: .8em;
+}
+
+ul li {
+    display: inline-block;
+    list-style-type: none;
+    padding-right: .5em;
+    padding-left: .5em;
+    margin-bottom: 2em;
+    position: relative;
+    left: -2.5em;
+    cursor: pointer;
+}
+
 img {
-  border-radius: 50%;
-  margin-right: 1em;
+    width: 6em;
+    height: auto;
+    border: .2em solid #333;
+    border-radius: 50%;
+    margin-right: 1em;
+    float: left;
+}
+
+p {
+    padding-top: 1em;
+}
+
+a {
+    color: green;
+    text-decoration: none;
+}
+
+a:hover {
+    color: dodgerblue;
+}
+
+.container {
+    width: 67%;
+    max-width: 600px;
+    margin: 1em auto;
+    border-radius: 3em;
+    padding: 2em 2em 8em 2em;
+    background: #feffff; /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover, #feffff 0%, #d2ebf9 100%); /* FF3.6-15 */
+    background: -webkit-radial-gradient(center, ellipse cover, #feffff 0%,#d2ebf9 100%); /* Chrome10-25,Safari5.1-6 */
+    background: radial-gradient(ellipse at center, #feffff 0%,#d2ebf9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 .profile {
     margin-bottom: 2em;
+}
+
+.hover {
+    color: #fff;
+    background-color: dodgerblue !important;
+    border-radius: .5em;
+    padding-bottom: .125em;
+}
+
+.active {
+    color: #fff;
+    background-color: green !important;
+    border-radius: .5em;
+    padding-bottom: .125em;
 }
 
 .hide {

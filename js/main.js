@@ -19,7 +19,7 @@ var users = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "
 createUser();
 getLogo(userArr);
 getStatus(userArr);
-setTimeout(printStatus, 750);
+setTimeout(printStatus, 900);
 
 // instantiate a User object to store username, streaming status, etc.
 // and add obj to the array of user objects
@@ -38,7 +38,7 @@ function getLogo(userArr) {
 		url += userArr[index].username + '?callback=?';
 		console.log('getLogo url:', url);
 
-		return $.ajax({
+		$.ajax({
 	        url: url,
 	        async: true,
 	        dataType: 'json',
@@ -48,6 +48,7 @@ function getLogo(userArr) {
 					userArr[index].logo = json.logo;
 				} else {
 					console.log('error: connection success but logo not found in json file');	
+					userArr[index].logo = 'http://via.placeholder.com/300x300?text=?';
 				}
 	        }
 	    }).fail(function(){
@@ -90,34 +91,83 @@ function getStatus(userArr) {
 function printStatus() {
 	$.each(userArr, function(index) {
 
-	    var classesToAdd = 'profile ' + userArr[index].status;
+	    var classesToAdd = 'profile clearfix ' + userArr[index].status;
 	    if (userArr[index].status === "offline") {
 	    	classesToAdd += " hide";
 			$('.results').append('<div class="' + classesToAdd + '">' 
-				+ '<img src="' + userArr[index].logo + '">' + userArr[index].username + '</div>');
+				+ '<img src="' + userArr[index].logo + '"><p>' + userArr[index].username + ' is ' + userArr[index].status + '</p></div>');
 	    } else {
-			$('.results').append('<div class="profile ' + userArr[index].status + '">' + '<a href="https://twitch.tv/"'
-				+ userArr[index].username + '"><img src="' + userArr[index].logo + '">' + userArr[index].username + ' is '
-				+ userArr[index].status  + '. ' + userArr[index].game + '</a></div>');
+			$('.results').append('<div class="profile clearfix ' + userArr[index].status + '">' + '<a href="https://twitch.tv/'
+				+ userArr[index].username + '"><img src="' + userArr[index].logo + '"><p>' + userArr[index].username + ' is '
+				+ userArr[index].status  + '. ' + userArr[index].game + '</a></p></div>');
 	    }
   	});
 }
 
+// $('li').css( 'cursor', 'pointer' );
+
 // event handler: only show online users when user clicks online link
-$('#online').on('click', function() {
+$('#online').on('mousedown', function() {
 	showAll();
 	hideOffline();
+	$('#offline').removeClass('active');
+	$('#all').removeClass('active');
+	$(this).addClass('active');
 });
 
 // event handler: only show offline users when user clicks offline link
-$('#offline').on('click', function() {
+$('#offline').on('mousedown', function() {
 	showAll();
 	hideOnline();
+	$('#online').removeClass('active');
+	$('#all').removeClass('active');
+	$(this).addClass('active');
 });
 
 // event handler: show both online and offline users when user clicks all link
-$('#all').on('click', function() {
+$('#all').on('mousedown', function() {
 	showAll();
+	$('#offline').removeClass('active');
+	$('#online').removeClass('active');
+	$(this).addClass('active');
+});
+
+// MOUSEENTER event handlers
+$('#online').on('mouseenter', function() {
+	$(this).toggleClass('hover');
+});
+
+$('#offline').on('mouseenter', function() {
+	$(this).toggleClass('hover');
+});
+
+$('#all').on('mouseenter', function() {
+	$(this).toggleClass('hover');
+});
+
+$('#online').on('mouseleave', function() {
+	$(this).toggleClass('hover');
+});
+
+$('#offline').on('mouseleave', function() {
+	$(this).toggleClass('hover');
+});
+
+$('#all').on('mouseleave', function() {
+	$(this).toggleClass('hover');
+});
+
+// MOUSE UP
+$('#online').on('mouseup', function() {
+	$(this).addClass('active');
+});
+
+$('#offline').on('mouseup', function() {
+	$(this).addClass('active');
+});
+
+$('#all').on('mouseup', function() {
+	$(this).addClass('active');
 });
 
 function hideOffline() {
