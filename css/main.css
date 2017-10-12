@@ -127,6 +127,15 @@ ul li {
     cursor: pointer;
 }
 
+ul li.active {
+  background-color:green;
+}
+
+ul li:hover:not(.active) { /* Blue only on hover and if it doesn't have an .active class */
+  background-color:dodgerblue;
+  border-radius: .5em;
+}
+
 img {
     width: 6em;
     height: auto;
