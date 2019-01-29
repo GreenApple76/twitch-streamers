@@ -15,34 +15,31 @@ $(document).ready(function() {
 	// twitch.tv streamer usernames
 	var users = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
 
-	// create user objects, retrieve logo link, retrieve online streaming info, output to web page
-	createUser();
-	getLogo(userArr);
-	getStatus(userArr);
-	setTimeout(printStatus, 1000);
+	// create array of 'channels' urls to be used for api requests
+	var channelsURLs = getURLs('channels', users);
 
-	// instantiate a User object to store username, streaming status, etc.
-	// and add obj to the array of user objects
-	function createUser() {
-			$.each(users, function(index, username) {
-				userArr.push(new User(username));
-			});
+	// generate array of URLs for api requests
+	function getURLs (itemType, users) {
+		return users.map(user => 'https://cors-anywhere.herokuapp.com/https://wind-bow.gomix.me/twitch-api/' + itemType + '/' + user);
 	}
 
-	// add twitch user profile logos
-	function getLogo(userArr) {
-		$.each(userArr, function(index) {
+	// create user objects, 
+	createUser();
+	
+	// api requests to retrieve logo link, retrieve online streaming info, output to web page
+	// array of ajax promises credit: https://stackoverflow.com/a/24706694
+	$.when.apply($, channelsURLs.map(function(url) { return $.ajax(url); }))
+		.done(function() {
+			var results = [];
+			// push all ajax result data onto an array
+			for (var i = 0; i < arguments.length; i++) {
+				results.push(arguments[i][0]);
+			}
 
-			// api for twitch.tv users
-			var url = 'https://wind-bow.glitch.me/twitch-api/users/';
-			url += userArr[index].username + '?callback=?';
-			console.log('getLogo url:', url);
-
-			$.ajax({
-		        url: url,
-		        async: true,
-		        dataType: 'json',
-		        success: function(json) {
+			// cycle through json objects from ajax requests above
+			var index = 0;
+			for (json of results) {
+					// assign logo to user
 					if (typeof json === 'object' && json.logo) {
 						console.log('matched json logo', json.logo);
 						userArr[index].logo = json.logo;
@@ -50,58 +47,41 @@ $(document).ready(function() {
 						console.log('error: connection success but logo not found in json file');	
 						userArr[index].logo = 'http://via.placeholder.com/300x300?text=?';
 					}
-		        }
-		    }).fail(function(){
-		    	console.log("failed retrieving data for ", userArr[index].username);
-		    });
-		});
-	 }
 
-	// get user's streaming status
-	function getStatus(userArr) {
-		$.each(userArr, function(index) {
-
-			// api url for twitch.tv streams
-			var url = 'https://wind-bow.glitch.me/twitch-api/streams/';
-			url += userArr[index].username + '?callback=?';
-			console.log(url);
-
-			// check status of twitch.tv user to see if they are currently streaming
-			$.ajax({
-		        url: url,
-		        async: true,
-		        dataType: 'json',
-		        success: function(json) {
-					if (typeof json === 'object' && json.stream === null) {
+					// assign status and game to user
+					if (typeof json === 'object' && json.status === null) {
 						userArr[index].status = 'offline';
-					} else if (typeof json === 'object' && json.stream.stream_type === 'live') {
+					} else if (typeof json === 'object' && json.status !== null) {
 						userArr[index].status = 'online';
-						userArr[index].game = json.stream.game + ': ' + json.stream.channel.status;
+						userArr[index].game = json.game + ': ' + json.status;
 					} else {
 						console.log('error');	
 					}
-		        }
-		    }).fail(function(){
-		    	console.log("failed retrieving data for ", userArr[index].username);
-		    });
+				index++;
+			}
+
+			// output user object data to web page
+			$.each(userArr, function(index) {
+
+				var classesToAdd = 'profile clearfix ' + userArr[index].status;
+				if (userArr[index].status === "offline") {
+					classesToAdd += " hide";
+					$('.results').append('<div class="' + classesToAdd + '">' 
+						+ '<img src="' + userArr[index].logo + '"><p>' + userArr[index].username + ' is ' + userArr[index].status + '</p></div>');
+				} else {
+					$('.results').append('<div class="profile clearfix ' + userArr[index].status + '">' + '<a href="https://twitch.tv/'
+						+ userArr[index].username + '"><img src="' + userArr[index].logo + '"><p>' + userArr[index].username + ' is '
+						+ userArr[index].status  + '. ' + userArr[index].game + '</a></p></div>');
+				}
+			});
 		});
-	}
 
-	// output twitch streamer information to web page
-	function printStatus() {
-		$.each(userArr, function(index) {
-
-		    var classesToAdd = 'profile clearfix ' + userArr[index].status;
-		    if (userArr[index].status === "offline") {
-		    	classesToAdd += " hide";
-				$('.results').append('<div class="' + classesToAdd + '">' 
-					+ '<img src="' + userArr[index].logo + '"><p>' + userArr[index].username + ' is ' + userArr[index].status + '</p></div>');
-		    } else {
-				$('.results').append('<div class="profile clearfix ' + userArr[index].status + '">' + '<a href="https://twitch.tv/'
-					+ userArr[index].username + '"><img src="' + userArr[index].logo + '"><p>' + userArr[index].username + ' is '
-					+ userArr[index].status  + '. ' + userArr[index].game + '</a></p></div>');
-		    }
-	  	});
+	// instantiate a User object to store username, streaming status, etc.
+	// and add obj to the array of user objects
+	function createUser() {
+			$.each(users, function(index, username) {
+				userArr.push(new User(username));
+			});
 	}
 
 	// event handler: remove active class from all <li> then add active class to clicked <li>
